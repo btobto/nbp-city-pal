@@ -6,7 +6,6 @@ namespace CityPalAPI.Controllers;
 [Route("[controller]")]
 public class CityPalController : ControllerBase
 {
-
     private readonly ILogger<CityPalController> logger;
     private readonly IBoltGraphClient graphClient;
 

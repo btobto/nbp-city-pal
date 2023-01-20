@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<IBoltGraphClient>(options =>
 {
     var client = new BoltGraphClient(
-        new Uri(builder.Configuration.GetConnectionString("Neo4j")),
+        new Uri(builder.Configuration.GetConnectionString("Neo4j")!),
         builder.Configuration.GetSection("Neo4j:User").Value,
         builder.Configuration.GetSection("Neo4j:Password").Value
     );
@@ -23,7 +23,7 @@ builder.Services.AddSingleton<IBoltGraphClient>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//  Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
