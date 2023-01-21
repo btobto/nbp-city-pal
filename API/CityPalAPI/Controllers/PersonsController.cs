@@ -1,4 +1,5 @@
 ﻿using CityPalAPI.Models;
+using CityPalAPI.TransferModels;
 using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 
@@ -7,15 +8,15 @@ namespace CityPalAPI.Controllers;
 [Route("[controller]")]
 public class PersonsController : ControllerBase
 {
-    private readonly ILogger<CityPalController> logger;
+    private readonly ILogger<PersonsController> logger;
     private readonly IBoltGraphClient graphClient;
 
-    public PersonsController(ILogger<CityPalController> logger, IBoltGraphClient graphClient)
+    public PersonsController(ILogger<PersonsController> logger, IBoltGraphClient graphClient)
     {
         this.logger = logger;
         this.graphClient = graphClient;
     }
-    
+
     [HttpPost("{name}/{email}")]
     public async Task<Person> Create(string name, string email)
     {
@@ -25,7 +26,7 @@ public class PersonsController : ControllerBase
             Name = name,
             Email = email
         };
-        
+
         await graphClient.Cypher
            .Merge("(p:Person { Email: $email })")
            .OnCreate()
@@ -35,7 +36,7 @@ public class PersonsController : ControllerBase
                email,
                person = p
            })
-           .Return<Person>("p").ExecuteWithoutResultsAsync();
+           .ExecuteWithoutResultsAsync();
 
         return p;
     }
@@ -60,5 +61,20 @@ public class PersonsController : ControllerBase
         .AndWhere((Person p2) => p2.Id == idSecond)
         .Delete("r")
         .ExecuteWithoutResultsAsync();
+    }
+
+    [HttpGet("Search/{name}")]
+    public async Task<IEnumerable<Person>> Search(string name)
+    {
+        name = name.Trim().ToLower();
+
+        var cypher =  graphClient.Cypher
+            .Match("(p:Person)")
+            .Where((Person p) => p.Name.Trim().ToLower().StartsWith(name))
+            .Return<Person>("p");
+
+        logger.LogInformation(cypher.Query.DebugQueryText);
+
+        return await cypher.ResultsAsync;
     }
 }
