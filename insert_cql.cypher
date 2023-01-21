@@ -133,11 +133,11 @@ time("23:00")
 
 (p1)-[:REVIEWED { Rating: 5, Comment: "bastati" }]->(c1);
 
-CREATE POINT INDEX place_location_index IF NOT EXISTS
+CREATE POINT INDEX place_location_index
 FOR (pl:Place) ON (pl.Location);
 
-CREATE TEXT INDEX place_name_index IF NOT EXISTS
-FOR (pl:Place) ON (pl.Name);
+CREATE FULLTEXT INDEX place_name_index
+FOR (pl:Place) ON EACH [pl.Name];
 
-CREATE TEXT INDEX person_name_index IF NOT EXISTS
-FOR (p:Person) ON (p.Name);
+CREATE FULLTEXT INDEX person_name_index
+FOR (p:Person) ON EACH [p.Name];

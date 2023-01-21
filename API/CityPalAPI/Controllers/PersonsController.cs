@@ -68,10 +68,12 @@ public class PersonsController : ControllerBase
     {
         name = name.Trim().ToLower();
 
-        var cypher =  graphClient.Cypher
-            .Match("(p:Person)")
-            .Where((Person p) => p.Name.Trim().ToLower().StartsWith(name))
-            .Return<Person>("p");
+        string dbCall = $"db.index.fulltext.queryNodes(\"person_name_index\", \"*{name}*\")";
+
+        var cypher = graphClient.Cypher
+            .Call(dbCall)
+            .Yield("node")
+            .Return<Person>("node");
 
         logger.LogInformation(cypher.Query.DebugQueryText);
 

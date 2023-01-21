@@ -1,3 +1,8 @@
-type SearchParam = 'Bar' | 'Cinema' | 'Hotel' | 'Location' | 'Person' | 'Place' | 'Restaurant';
+import { Point } from '../data-types';
 
-export type SearchParams = SearchParam[];
+type PlaceType = 'Bar' | 'Cinema' | 'Hotel' | 'Location' | 'Person' | 'Place' | 'Restaurant';
+
+export interface SearchParams {
+  placeTypes: PlaceType[];
+  location: Point;
+}

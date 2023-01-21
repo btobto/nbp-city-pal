@@ -3,6 +3,7 @@ using CityPalAPI.Models;
 using CityPalAPI.TransferModels;
 using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
+using Neo4jClient.Cypher;
 using Neo4jClient.ReturnPoly;
 
 namespace CityPalAPI.Controllers;
@@ -20,16 +21,18 @@ public class PlacesController : ControllerBase
     }
 
     [HttpPost("Search/{name}")]
-    public async Task<IEnumerable<Place>> Search(string name, [FromBody] string[] searchParams)
+    public async Task<IEnumerable<Place>> Search(string name, [FromBody] SearchParams searchParams)
     {
         name = name.Trim().ToLower();
 
-        if (searchParams.Length == 0)
+        string dbCall = $"db.index.fulltext.queryNodes(\"place_name_index\", \"*{name}*\")";
+
+        if (searchParams.PlaceTypes.Length == 0)
         {
             var cypherWithoutParams = graphClient.Cypher
-                .Match("(p:Place")
-                .Where((Place p) => p.Name.StartsWith(name))
-                .Return<Place>("p");
+                .Call(dbCall)
+                .Yield("node")
+                .Return<Place>("node");
 
             logger.LogInformation(cypherWithoutParams.Query.DebugQueryText);
 
@@ -37,23 +40,25 @@ public class PlacesController : ControllerBase
         }
 
         var cypher = graphClient.Cypher
-            .Match($"(p:{searchParams[0]})")
-            .Where((Place p) => p.Name.StartsWith(name))
-            .Return<Place>("p");
+                .Call(dbCall)
+                .Yield("node")
+                .Where($"\"{searchParams.PlaceTypes[0]}\" IN LABELS(node)");
 
-        for (int i = 1; i < searchParams.Length; i++)
+        for (int i = 1; i < searchParams.PlaceTypes.Length;  i++)
         {
             cypher = cypher
-                        .Union()
-                        .Match($"(p:{searchParams[i]})")
-                        .Where((Place p) => p.Name.StartsWith(name))
-                        .Return<Place>("p");
+                .OrWhere($"\"{searchParams.PlaceTypes[i]}\" IN LABELS(node)");
         }
 
-        logger.LogInformation(cypher.Query.DebugQueryText);
+        ICypherFluentQuery<Place> cypherPlace = cypher
+           .With($"point.distance(point({{srId: 4326, x: {searchParams.Location.X}, y: {searchParams.Location.Y}}}), node.Location) as distance, node")
+           .Set("node.Distance = distance")
+           .ReturnPolymorphic<Place>("node")
+           .OrderBy("distance");
 
-        return await cypher.ResultsAsync;
+        logger.LogInformation(cypherPlace.Query.DebugQueryText);
 
+        return await cypherPlace.ResultsAsync;
     }
 
     [HttpPost("Recommended/{personId}")]
