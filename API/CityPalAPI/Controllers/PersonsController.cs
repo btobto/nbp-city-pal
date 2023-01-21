@@ -19,7 +19,7 @@ public class PersonsController : ControllerBase
         this.graphClient = graphClient;
     }
 
-    [HttpGet("{email}")]
+    [HttpGet("Login/{email}")]
     public async Task<IActionResult> Login(string email)
     {
         var cypher = graphClient.Cypher
@@ -44,7 +44,7 @@ public class PersonsController : ControllerBase
         return Ok((await cypher.ResultsAsync).Single());
     }
 
-    [HttpPost("{name}/{email}")]
+    [HttpPost("Register/{name}/{email}")]
     public async Task<Person> Create(RegisterModel registerModel)
     {
         Person p = new Person
@@ -106,4 +106,17 @@ public class PersonsController : ControllerBase
 
         return await cypher.ResultsAsync;
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetUser(string id)
+    {
+        var cypher = graphClient.Cypher
+            .Match("(p:Person { Id: $id })")
+            .WithParam("id", id)
+            .Return<Person>("p");
+
+		logger.LogInformation(cypher.Query.DebugQueryText);
+
+		return Ok(await cypher.ResultsAsync);
+	}
 }
