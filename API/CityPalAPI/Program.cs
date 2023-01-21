@@ -1,5 +1,6 @@
 using CityPalAPI.Models;
 using CityPalAPI.TransferModels;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.ObjectPool;
 using Neo4jClient;
 using Neo4jClient.ReturnPoly;
@@ -16,6 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddFluentValidationAutoValidation();
+
 builder.Services.AddSingleton<IBoltGraphClient>(options =>
 {
     var client = new BoltGraphClient(
@@ -25,8 +28,6 @@ builder.Services.AddSingleton<IBoltGraphClient>(options =>
     );
 
     client.JsonConverters.Add(new PolymorphicJsonLabelConverter<Place>((place, labels) => { }));
-
-    client.JsonConverters.Add(new PolymorphicJsonLabelConverter<PlaceResponse>((place, labels) => { }));
 
     client.ConnectAsync().Wait();
     return client;

@@ -1,6 +1,4 @@
-import { Point } from '../data-types';
-
-type PlaceType = 'Bar' | 'Cinema' | 'Hotel' | 'Location' | 'Person' | 'Place' | 'Restaurant';
+import { PlaceType, Point } from '../data-types';
 
 export interface SearchParams {
   placeTypes: PlaceType[];

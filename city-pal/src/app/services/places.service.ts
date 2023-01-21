@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Place } from '../models';
-import { PlaceTypes } from '../transfer-models/';
+import { SearchParams } from '../transfer-models';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +11,7 @@ import { PlaceTypes } from '../transfer-models/';
 export class PlacesService {
   constructor(private http: HttpClient) {}
 
-  search(name: string, searchParams: PlaceTypes) {
+  search(name: string, searchParams: SearchParams) {
     return this.http.post<Place[]>(
       environment.API_URL + '/Places/Search/' + name,
       searchParams,

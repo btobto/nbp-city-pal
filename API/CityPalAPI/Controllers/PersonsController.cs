@@ -1,6 +1,8 @@
 ﻿using CityPalAPI.Models;
 using CityPalAPI.TransferModels;
+using CityPalAPI.Validators;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Neo4jClient;
 
 namespace CityPalAPI.Controllers;
@@ -17,14 +19,39 @@ public class PersonsController : ControllerBase
         this.graphClient = graphClient;
     }
 
+    [HttpGet("{email}")]
+    public async Task<IActionResult> Login(string email)
+    {
+        var cypher = graphClient.Cypher
+            .Match("(p:Person { Email: $email })")
+            .WithParam("email", email)
+            .Return<Person>("p");
+
+        logger.LogInformation(cypher.Query.DebugQueryText);
+
+        var results = await cypher.ResultsAsync;
+
+        if (!results.Any())
+        {
+            return ValidationProblem(new ErrorResponse("Title", System.Net.HttpStatusCode.NotFound, new Dictionary<string, string[]>
+            {
+                {
+                    nameof(email), new string[]{"Account with given email does not exist."}
+                }
+            }));
+        }
+
+        return Ok((await cypher.ResultsAsync).Single());
+    }
+
     [HttpPost("{name}/{email}")]
-    public async Task<Person> Create(string name, string email)
+    public async Task<Person> Create(RegisterModel registerModel)
     {
         Person p = new Person
         {
             Id = Guid.NewGuid().ToString(),
-            Name = name,
-            Email = email
+            Name = registerModel.Name,
+            Email = registerModel.Email
         };
 
         await graphClient.Cypher
@@ -33,7 +60,7 @@ public class PersonsController : ControllerBase
            .Set("p = $person")
            .WithParams(new
            {
-               email,
+               registerModel.Email,
                person = p
            })
            .ExecuteWithoutResultsAsync();

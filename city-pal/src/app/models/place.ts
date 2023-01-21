@@ -1,6 +1,7 @@
-import { Point } from '../data-types';
+import { PlaceType, Point } from '../data-types';
 
 export interface Place {
+  $discriminator: PlaceType;
   id: string;
   name: string;
   address: string;
