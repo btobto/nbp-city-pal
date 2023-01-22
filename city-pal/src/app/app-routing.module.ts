@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
 import { NavigationComponent } from './pages/navigation/navigation.component';
@@ -12,6 +13,7 @@ const routes: Routes = [
   {
     path: '',
     component: NavigationComponent,
+    canActivate: [AuthGuard],
     children: [
       { path: 'home', component: HomeComponent },
       { path: 'person/:id', component: PersonComponent },
@@ -24,6 +26,7 @@ const routes: Routes = [
     path: '**',
     redirectTo: '',
     component: HomeComponent,
+    canActivate: [AuthGuard],
   },
 ];
 

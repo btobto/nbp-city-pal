@@ -1,19 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { PersonsService } from 'src/app/services/persons.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss'],
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   email: string | null = null;
   name: string | null = null;
 
-  constructor() {}
-
-  ngOnInit(): void {}
+  constructor(private personsService: PersonsService, private router: Router) {}
 
   register() {
-    throw new Error('Method not implemented.');
+    if (this.email && this.name) {
+      this.personsService
+        .register(this.email, this.name)
+        .subscribe((person) => {
+          this.router.navigate(['/home']);
+        });
+    }
   }
 }

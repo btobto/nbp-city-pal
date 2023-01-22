@@ -1,16 +1,15 @@
 using CityPalAPI.Models;
-using CityPalAPI.TransferModels;
 using FluentValidation.AspNetCore;
-using Microsoft.Extensions.ObjectPool;
 using Neo4jClient;
 using Neo4jClient.ReturnPoly;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Logging.AddConsole();
+builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging"))
+    .AddConsole()
+    .AddDebug();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -18,6 +17,28 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSDevelopment", builder =>
+    {
+        builder.WithOrigins(
+                "http://localhost:5500",
+                "https://localhost:5500",
+                "http://127.0.0.1:5500",
+                "https://127.0.0.1:5500",
+                "http://localhost:8000",
+                "https://localhost:8000",
+                "http://127.0.0.1:8000",
+                "https://127.0.0.1:8000",
+                "http://localhost:4200",
+                "https://localhost:4200",
+                "http://127.0.0.1:4200",
+                "https://127.0.0.1:4200")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
 
 builder.Services.AddSingleton<IBoltGraphClient>(options =>
 {
@@ -43,6 +64,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.Use(async (context, next) =>
+{
+    Console.BackgroundColor = ConsoleColor.Black;
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.WriteLine("API Route: " + context.Request.Path + " " + DateTime.Now);
+    await next.Invoke();
+});
+
+app.UseCors("CORSDevelopment");
 
 app.UseAuthorization();
 

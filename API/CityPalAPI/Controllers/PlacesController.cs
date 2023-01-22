@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 using Neo4jClient.ReturnPoly;
+using System.Text.Json;
 
 namespace CityPalAPI.Controllers;
 [ApiController]
@@ -20,6 +21,21 @@ public class PlacesController : ControllerBase
         this.graphClient = graphClient;
     }
 
+    [HttpGet("{id}")]
+    public async Task<Place> GetPlace(string id)
+    {
+        var cypher = graphClient.Cypher
+            .Match("(p:Place)")
+            .Where((Place p) => p.Id == id)
+            .ReturnDistinctPolymorphic<Place>("p");
+
+        logger.LogInformation(cypher.Query.DebugQueryText);
+
+        var res = await cypher.ResultsAsync;
+
+        return res.Single();
+    }
+
     [HttpPost("Search/{name}")]
     public async Task<IEnumerable<Place>> Search(string name, [FromBody] SearchParams searchParams)
     {
@@ -32,7 +48,7 @@ public class PlacesController : ControllerBase
             var cypherWithoutParams = graphClient.Cypher
                 .Call(dbCall)
                 .Yield("node")
-                .Return<Place>("node");
+                .ReturnPolymorphic<Place>("node");
 
             logger.LogInformation(cypherWithoutParams.Query.DebugQueryText);
 
@@ -64,6 +80,8 @@ public class PlacesController : ControllerBase
     [HttpPost("Recommended/{personId}")]
     public async Task<IEnumerable<Place>> RecommendedPlaces(string personId, [FromBody] Point location)
     {
+        logger.LogInformation(location.ToString());
+
         var cypher = graphClient.Cypher
            .Match(
                 "(p:Person)",

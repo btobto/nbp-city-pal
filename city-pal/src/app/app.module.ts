@@ -11,6 +11,7 @@ import { PersonComponent } from './pages/person/person.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { NavigationComponent } from './pages/navigation/navigation.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -23,8 +24,14 @@ import { NavigationComponent } from './pages/navigation/navigation.component';
     NavbarComponent,
     NavigationComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
-  providers: [],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
+  providers: [
+    {
+      provide: 'POSITION_OPTIONS',
+      useValue: { enableHighAccuracy: true },
+    },
+  ],
+
   bootstrap: [AppComponent],
 })
 export class AppModule {}

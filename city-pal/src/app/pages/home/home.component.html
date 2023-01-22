@@ -1,0 +1,7 @@
+<ng-container *ngIf="this.user$ | async as user">
+  <h1 *ngIf="this.recommendedPlaces$ | async as recommendedPlaces">
+    Recommended places
+    <br />
+    {{ recommendedPlaces | json }}
+  </h1>
+</ng-container>

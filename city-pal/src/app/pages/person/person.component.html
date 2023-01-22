@@ -1,1 +1,24 @@
 <p>person works!</p>
+
+<h1>{{ this.person$ | async | json }}</h1>
+
+<h1>{{ this.personsReviews$ | async | json }}</h1>
+
+<ng-container *ngIf="this.usersFriends$ | async as usersFriends">
+  <ng-container *ngIf="this.user$ | async as user">
+    <ng-container *ngIf="this.person$ | async as person">
+      <ng-container *ngIf="user.id !== person.id">
+        <button
+          type="button"
+          *ngIf="!isFriend(person.id, usersFriends); else isntFriend"
+          (click)="addFriend(user.id, person.id)"
+        >
+          Add friend
+        </button>
+        <ng-template #isntFriend>
+          <button type="button" (click)="removeFriend(user.id, person.id)">Remove friend</button>
+        </ng-template>
+      </ng-container>
+    </ng-container>
+  </ng-container>
+</ng-container>

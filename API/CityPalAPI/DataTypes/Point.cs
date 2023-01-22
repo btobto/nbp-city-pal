@@ -1,5 +1,5 @@
 ﻿namespace CityPalAPI.DataTypes;
-public struct Point
+public class Point
 {
     public Point(int srId, double x, double y)
     {

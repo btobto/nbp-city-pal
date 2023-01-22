@@ -17,14 +17,16 @@ public class ReviewsController
     }
 
     [HttpGet("/Reviews/Persons/{personId}")]
-    public async Task<IEnumerable<Review>> PersonPlaceReviews(string personId)
+    public async Task<IEnumerable<Review>> PersonsReviews(string personId)
     {
-        var res = await graphClient.Cypher
-           .Match("(p)-[r:REVIEWED]->(pl)")
+        var cypher =  graphClient.Cypher
+           .Match("(p:Person)-[r:REVIEWED]->(pl:Place)")
            .Where((Person p) => p.Id == personId)
-           .Return<Review>("r").ResultsAsync;
+           .Return<Review>("r");
 
-        return res;
+        logger.LogInformation(cypher.Query.DebugQueryText);
+
+        return await cypher.ResultsAsync;
     }
 
     [HttpPost("/Reviews/Places")]

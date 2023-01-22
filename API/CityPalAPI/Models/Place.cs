@@ -1,17 +1,16 @@
 ﻿using CityPalAPI.DataTypes;
 using CityPalAPI.JsonConverters;
-using CityPalAPI.TransferModels;
 using System.Text.Json.Serialization;
 
 namespace CityPalAPI.Models;
 
-[JsonPolymorphic(TypeDiscriminatorPropertyName = "$discriminator")]
+[JsonPolymorphic]
 [JsonDerivedType(typeof(Bar), nameof(Bar))]
 [JsonDerivedType(typeof(Gym), nameof(Gym))]
 [JsonDerivedType(typeof(Hotel), nameof(Hotel))]
 [JsonDerivedType(typeof(Restaurant), nameof(Restaurant))]
 [JsonDerivedType(typeof(Cinema), nameof(Cinema))]
-public class Place
+public abstract class Place
 {
     public string Id { get; set; } = default!;
 

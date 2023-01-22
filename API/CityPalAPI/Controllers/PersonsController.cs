@@ -2,7 +2,6 @@
 using CityPalAPI.TransferModels;
 using CityPalAPI.Validators;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Neo4jClient;
 
 namespace CityPalAPI.Controllers;
@@ -108,15 +107,28 @@ public class PersonsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetUser(string id)
+    public async Task<Person> GetPerson(string id)
     {
         var cypher = graphClient.Cypher
-            .Match("(p:Person { Id: $id })")
-            .WithParam("id", id)
+            .Match("(p:Person)")
+            .Where((Person p) => p.Id == id)
             .Return<Person>("p");
 
 		logger.LogInformation(cypher.Query.DebugQueryText);
 
-		return Ok(await cypher.ResultsAsync);
+		return (await cypher.ResultsAsync).Single();
 	}
+
+    [HttpGet("Friends/{id}")]
+    public async Task<IEnumerable<Person>> GetPersonsFriends(string id)
+    {
+        var cypher = graphClient.Cypher
+            .Match("(p:Person)-[:FRIENDS_WITH]->(friend:Person)")
+            .Where((Person p) => p.Id == id)
+            .Return<Person>("friend");
+
+        logger.LogInformation(cypher.Query.DebugQueryText);
+
+        return await cypher.ResultsAsync;
+    }
 }

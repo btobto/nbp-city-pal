@@ -1,14 +1,16 @@
-<div>
-  <div class="navbar">
-    <div class="navbar-left">
-      <h1 class="navbar-header">CityPal</h1>
+<ng-container *ngIf="this.user$ | async as user">
+  <div>
+    <div class="navbar">
+      <button class="navbar-left" (click)="redirectHome()">
+        <h1 class="navbar-header">CityPal</h1>
+      </button>
+      <div class="navbar-center">
+        <input type="text" class="navbar-search" placeholder="Search..." />
+      </div>
+      <div class="navbar-right">
+        <button class="btn" (click)="redirectToProfile(user.id)">Profile</button>
+      </div>
     </div>
-    <div class="navbar-center">
-      <input type="text" class="navbar-search" placeholder="Search..." />
-    </div>
-    <div class="navbar-right">
-      <button class="btn">Profile</button>
-    </div>
+    <router-outlet></router-outlet>
   </div>
-  <router-outlet></router-outlet>
-</div>
+</ng-container>

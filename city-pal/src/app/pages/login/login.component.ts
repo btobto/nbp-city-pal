@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { PersonsService } from 'src/app/services/persons.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   email: string | null = null;
-  password: string | null = null;
 
-  constructor() {}
-
-  ngOnInit(): void {}
+  constructor(private personsService: PersonsService, private router: Router) {}
 
   login() {
-    throw new Error('Method not implemented.');
+    if (this.email) {
+      this.personsService.login(this.email).subscribe((person) => {
+        this.router.navigate(['/home']);
+      });
+    }
   }
 }
