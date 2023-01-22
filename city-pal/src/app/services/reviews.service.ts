@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, map, Observable, switchMap, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Review } from '../models';
 
@@ -13,11 +13,21 @@ export class ReviewsService {
   constructor(private http: HttpClient) {}
 
   reviewsFromPerson(personId: string): Observable<Review[]> {
-    return this.http.get<Review[]>(environment.API_URL + '/Reviews/Persons/' + personId);
+    return this.http.get<Review[]>(environment.API_URL + '/Reviews/Persons/' + personId).pipe(
+      switchMap((r) => {
+        this.reviews$.next(r);
+        return this.reviews$;
+      })
+    );
   }
 
   reviewsForPlace(placeId: string): Observable<Review[]> {
-    return this.http.get<Review[]>(environment.API_URL + '/Reviews/Places/' + placeId);
+    return this.http.get<Review[]>(environment.API_URL + '/Reviews/Places/' + placeId).pipe(
+      switchMap((r) => {
+        this.reviews$.next(r);
+        return this.reviews$;
+      })
+    );
   }
 
   createReview(review: Review): Observable<Review> {
