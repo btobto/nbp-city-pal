@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { Console } from 'console';
 import { Observable } from 'rxjs';
 import { Person, Place, Review } from 'src/app/models';
@@ -20,6 +21,7 @@ export class ReviewComponent implements OnInit {
   isPressed: boolean = false;
 
   constructor(
+    private router: Router,
     public reviewsService: ReviewsService,
     private placeService: PlacesService,
     private personService: PersonsService
@@ -48,5 +50,13 @@ export class ReviewComponent implements OnInit {
         )
       );
     });
+  }
+
+  redirectToProfile(id: string) {
+    this.router.navigate(['/person/' + id]);
+  }
+
+  redirectToPlace(id: string) {
+    this.router.navigate(['/place/' + id]);
   }
 }

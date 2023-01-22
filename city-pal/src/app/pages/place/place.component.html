@@ -1,5 +1,25 @@
-<p>place works!</p>
+<!-- <p>place works!</p>
 
 <h1>{{ this.place$ | async | json }}</h1>
 
-<h1>{{ this.placesReviews$ | async | json }}</h1>
+<h1>{{ this.placesReviews$ | async | json }}</h1> -->
+
+<ng-container *ngIf="this.place$ | async as place">
+  <h1>{{ place.name }} (Rating: {{ place.rating }})</h1>
+  <h2>{{ place.address }}, {{ place.cityName }}</h2>
+  <p>Working hours:</p>
+  <ul>
+    <li>Monday: {{ place.openingHours[0] }} - {{ place.closingHours[0] }}</li>
+    <li>Tuesday: {{ place.openingHours[1] }} - {{ place.closingHours[1] }}</li>
+    <li>Wednesday: {{ place.openingHours[2] }} - {{ place.closingHours[2] }}</li>
+    <li>Thursday: {{ place.openingHours[3] }} - {{ place.closingHours[3] }}</li>
+    <li>Friday: {{ place.openingHours[4] }} - {{ place.closingHours[4] }}</li>
+    <li>Saturday: {{ place.openingHours[5] }} - {{ place.closingHours[5] }}</li>
+    <li>Sunday: {{ place.openingHours[6] }} - {{ place.closingHours[6] }}</li>
+  </ul>
+  <ng-container *ngIf="this.placesReviews$ | async as reviews">
+    <ng-container *ngIf="this.user$ | async as user">
+      <app-reviews [reviews]="reviews" [place]="place" [viewer]="user"></app-reviews>
+    </ng-container>
+  </ng-container>
+</ng-container>

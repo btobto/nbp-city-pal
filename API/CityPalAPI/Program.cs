@@ -1,4 +1,7 @@
 using CityPalAPI.Models;
+using CityPalAPI.TransferModels;
+using CityPalAPI.Validators;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Neo4jClient;
 using Neo4jClient.ReturnPoly;
@@ -17,6 +20,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddScoped<IValidator<RegisterModel>, RegisterValidator>();
 
 builder.Services.AddCors(options =>
 {
