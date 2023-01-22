@@ -1,0 +1,12 @@
+<div class="reviews">
+  <ng-container *ngIf="reviews.length == 0">
+    <h2>User hasn't reviewed any places yet.</h2>
+  </ng-container>
+  <app-review
+    *ngFor="let review of reviews"
+    [review]="review"
+    [person]="person"
+    [place]="place"
+    [viewer]="viewer"
+  ></app-review>
+</div>

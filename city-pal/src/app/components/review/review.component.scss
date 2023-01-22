@@ -1,4 +1,18 @@
 .review {
 	background-color: lighten(#CFD8DC, 10%);
 	padding: 0.5rem;
+	max-width: 800px;
+}
+
+.button-group {
+    display: flex;
+    justify-content: flex-start;
+	gap: 10px;
+}
+
+.edit-form {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding-bottom: 0.5rem;
 }

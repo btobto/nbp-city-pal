@@ -34,3 +34,8 @@
     cursor: pointer;
     background-color: darken(#CFD8DC, 10%);
 }
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}   

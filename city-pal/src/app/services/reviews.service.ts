@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Review } from '../models';
 
@@ -8,6 +8,8 @@ import { Review } from '../models';
   providedIn: 'root',
 })
 export class ReviewsService {
+  reviews$: BehaviorSubject<Review[]> = new BehaviorSubject<Review[]>([]);
+
   constructor(private http: HttpClient) {}
 
   reviewsFromPerson(personId: string): Observable<Review[]> {

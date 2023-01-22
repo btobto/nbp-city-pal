@@ -14,6 +14,7 @@ import { NavigationComponent } from './pages/navigation/navigation.component';
 import { HttpClientModule } from '@angular/common/http';
 import { SearchComponent } from './pages/search/search.component';
 import { ReviewComponent } from './components/review/review.component';
+import { ReviewsComponent } from './components/reviews/reviews.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { ReviewComponent } from './components/review/review.component';
     NavigationComponent,
     SearchComponent,
     ReviewComponent,
+    ReviewsComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [
