@@ -36,7 +36,7 @@ import { PlaceCardComponent } from './components/place-card/place-card.component
   providers: [
     {
       provide: 'POSITION_OPTIONS',
-      useValue: { enableHighAccuracy: true },
+      useValue: { enableHighAccuracy: false },
     },
   ],
 

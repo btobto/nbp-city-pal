@@ -17,11 +17,7 @@
           Add friend
         </button>
         <ng-template #isntFriend>
-          <button
-            class="btn btn-secondary"
-            type="button"
-            (click)="removeFriend(user.id, person.id)"
-          >
+          <button class="btn btn-delete" type="button" (click)="removeFriend(user.id, person.id)">
             Remove friend
           </button>
         </ng-template>
