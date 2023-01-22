@@ -6,6 +6,7 @@ import {
   ObservedValuesFromArray,
   of,
   Subject,
+  switchMap,
   tap,
 } from 'rxjs';
 import { Person } from '../models';
@@ -20,6 +21,8 @@ import { RegisterModel } from '../transfer-models';
 export class PersonsService {
   public user$ = new BehaviorSubject<Person | null>(null);
   public usersFriends$ = new BehaviorSubject<Person[]>([]);
+
+  public person$ = new BehaviorSubject<Person | null>(null);
 
   constructor(private http: HttpClient) {
     const user = window.localStorage.getItem('user');
@@ -37,7 +40,12 @@ export class PersonsService {
   }
 
   getPerson(id: string): Observable<Person> {
-    return this.http.get<Person>(environment.API_URL + '/Persons/' + id);
+    return <Observable<Person>>this.http.get<Person>(environment.API_URL + '/Persons/' + id).pipe(
+      switchMap((person) => {
+        this.person$.next(person);
+        return this.person$;
+      })
+    );
   }
 
   search(text: string): Observable<Person[]> {

@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, filter, map, Observable, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, Observable, Subject, take } from 'rxjs';
 import { Person } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
 import { SearchService } from 'src/app/services/search.service';
@@ -41,6 +41,7 @@ export class NavbarComponent {
 
   redirectToProfile(id: string) {
     this.router.navigate(['/person/' + id]);
+    this.personsService.getPerson(id).pipe(take(1)).subscribe();
   }
 
   redirectHome() {

@@ -115,7 +115,8 @@ public class PersonsController : ControllerBase
         var cypher = graphClient.Cypher
             .Call(dbCall)
             .Yield("node")
-            .Return<Person>("node");
+            .Return<Person>("node")
+            .Limit(10);
 
         logger.LogInformation(cypher.Query.DebugQueryText);
 

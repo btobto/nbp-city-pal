@@ -75,7 +75,8 @@ public class PlacesController : ControllerBase
            .With($"point.distance(point({{srId: 4326, x: {searchParams.Location.X}, y: {searchParams.Location.Y}}}), node.Location) as distance, node")
            .Set("node.Distance = distance")
            .ReturnPolymorphic<Place>("node")
-           .OrderBy("distance");
+           .OrderBy("distance")
+           .Limit(10);
 
         logger.LogInformation(cypherPlace.Query.DebugQueryText);
 
