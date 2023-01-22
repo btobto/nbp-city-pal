@@ -8,5 +8,6 @@ export interface Place {
   rating: number;
   location: Point;
   cityName: string;
-  workingHours: string[7];
+  openingHours: string[7];
+  closingHours: string[7];
 }

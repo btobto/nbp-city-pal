@@ -9,6 +9,7 @@
       </ng-container>
       <ng-container *ngIf="user.id !== person.id; else isUser">
         <button
+          class="btn btn-secondary"
           type="button"
           *ngIf="!isFriend(person.id, usersFriends); else isntFriend"
           (click)="addFriend(user.id, person.id)"
@@ -16,7 +17,13 @@
           Add friend
         </button>
         <ng-template #isntFriend>
-          <button type="button" (click)="removeFriend(user.id, person.id)">Remove friend</button>
+          <button
+            class="btn btn-secondary"
+            type="button"
+            (click)="removeFriend(user.id, person.id)"
+          >
+            Remove friend
+          </button>
         </ng-template>
       </ng-container>
       <ng-template #isUser> </ng-template>
