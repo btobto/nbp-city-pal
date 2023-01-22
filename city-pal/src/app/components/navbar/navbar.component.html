@@ -5,7 +5,15 @@
         <h1 class="navbar-header">CityPal</h1>
       </button>
       <div class="navbar-center">
-        <input type="text" class="navbar-search" placeholder="Search..." />
+        <input
+          #searchInput
+          (keyup)="this.subject.next($any($event).target.value)"
+          class="navbar-search"
+          matInput
+          placeholder="Search for places and persons..."
+          type="text"
+        />
+        <button type="button" (click)="redirectToSearch()">Search</button>
       </div>
       <div class="navbar-right">
         <button class="btn" (click)="redirectToProfile(user.id)">Profile</button>

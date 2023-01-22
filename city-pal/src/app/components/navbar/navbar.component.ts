@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, Observable, Subject } from 'rxjs';
 import { Person } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
+import { SearchService } from 'src/app/services/search.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,8 +13,30 @@ import { PersonsService } from 'src/app/services/persons.service';
 export class NavbarComponent {
   user$: Observable<Person | null>;
 
-  constructor(private personsService: PersonsService, private router: Router) {
+  @ViewChild('searchInput') input!: ElementRef;
+  public subject = new Subject<string>();
+
+  constructor(
+    private router: Router,
+    private personsService: PersonsService,
+    private searchService: SearchService
+  ) {
     this.user$ = this.personsService.user$;
+
+    this.subject
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        filter((text) => !!text),
+        map((text) => text.trim())
+      )
+      .subscribe((query) => {
+        console.log(query);
+
+        this.router.navigate(['search']);
+
+        this.searchService.search(query);
+      });
   }
 
   redirectToProfile(id: string) {
@@ -22,5 +45,9 @@ export class NavbarComponent {
 
   redirectHome() {
     this.router.navigate(['/home']);
+  }
+
+  redirectToSearch() {
+    this.router.navigate(['/search']);
   }
 }

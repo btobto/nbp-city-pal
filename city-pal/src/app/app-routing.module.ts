@@ -7,6 +7,7 @@ import { NavigationComponent } from './pages/navigation/navigation.component';
 import { PersonComponent } from './pages/person/person.component';
 import { PlaceComponent } from './pages/place/place.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { SearchComponent } from './pages/search/search.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: 'home', component: HomeComponent },
       { path: 'person/:id', component: PersonComponent },
       { path: 'place/:id', component: PlaceComponent },
+      { path: 'search', component: SearchComponent },
     ],
   },
   { path: 'login', component: LoginComponent },

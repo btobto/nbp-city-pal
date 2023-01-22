@@ -40,7 +40,9 @@ export class PersonsService {
   }
 
   search(text: string): Observable<Person[]> {
-    return this.http.get<Person[]>(environment.API_URL + '/Search/' + text.trim().toLowerCase());
+    return this.http.get<Person[]>(
+      environment.API_URL + '/Persons/Search/' + text.trim().toLowerCase()
+    );
   }
 
   addFriend(idFirst: string, idSecond: string) {

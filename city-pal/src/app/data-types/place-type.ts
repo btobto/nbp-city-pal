@@ -1,1 +1,1 @@
-export type PlaceType = 'Bar' | 'Cinema' | 'Hotel' | 'Location' | 'Person' | 'Place' | 'Restaurant';
+export type PlaceType = 'Bar' | 'Gym' | 'Cinema' | 'Hotel' | 'Restaurant';
