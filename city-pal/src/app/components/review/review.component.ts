@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Console } from 'console';
 import { Observable } from 'rxjs';
 import { Person, Place, Review } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
@@ -19,16 +20,16 @@ export class ReviewComponent implements OnInit {
     private reviewsService: ReviewsService,
     private placeService: PlacesService,
     private personService: PersonsService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     if (this.place === null) {
-      placeService.getPlace(this.review.placeId).subscribe((p) => (this.place = p));
+      this.placeService.getPlace(this.review.placeId).subscribe((p) => (this.place = p));
     }
     if (this.person === null) {
-      personService.getPerson(this.review.personId).subscribe((p) => (this.person = p));
+      this.personService.getPerson(this.review.personId).subscribe((p) => (this.person = p));
     }
   }
-
-  ngOnInit(): void {}
 
   editReview(rating: number, text: string) {
     this.review.rating = rating;
