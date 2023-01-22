@@ -71,14 +71,15 @@ public class PlacesController : ControllerBase
             }
         }
 
-        var cypherReturnPoly = cypher.ReturnPolymorphic<Place>("node")
+        var cypherReturnPoly = cypher
+            .Match("(node)-[:LOCATED_IN]->(c:City)")
+            .Set("node.CityName = c.Name")
+            .ReturnPolymorphic<Place>("node")
             .Limit(10);
 
         var places = (await cypherReturnPoly.ResultsAsync).ToList();
 
         ICypherFluentQuery<float> distancesCypher = cypher
-           .Match("(node)-[:LOCATED_IN]->(c:City)")
-           .Set("node.CityName = c.Name")
            .With($"node, point.distance(point({{srId: 4326, x: {searchParams.Location.X}, y: {searchParams.Location.Y}}}), node.Location) as distance")
            .Return<float>("distance")
            .OrderBy("distance")
