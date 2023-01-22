@@ -46,11 +46,8 @@ export class ReviewComponent implements OnInit {
     }
 
     if (this.creating) {
-      console.log(this.review, 'ne treba niz');
       this.reviewsService.createReview(this.review).subscribe((r) => {
         this.review = r;
-
-        console.log(r, 'ne treba niz');
 
         reviews.push(r);
 
@@ -76,8 +73,6 @@ export class ReviewComponent implements OnInit {
         (review) =>
           !(review.personId === this.review.personId && review.placeId === this.review.placeId)
       );
-
-      console.log(filteredReviews);
 
       this.reviewsService.reviews$.next(filteredReviews);
     });

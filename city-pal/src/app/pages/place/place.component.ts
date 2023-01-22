@@ -26,11 +26,7 @@ export class PlaceComponent {
     const id: string = this.route.snapshot.paramMap.get('id')!;
 
     this.place$ = this.placesService.getPlace(id);
-    this.placesReviews$ = this.reviewsService.reviewsForPlace(id).pipe(
-      tap((r) => {
-        // console.log(r);
-      })
-    );
+    this.placesReviews$ = this.reviewsService.reviewsForPlace(id);
 
     this.user$ = this.personsService.user$;
   }
