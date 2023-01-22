@@ -6,6 +6,9 @@
 <h1 *ngIf="this.placesSearchResults$ | async as placesResults">
   Places
   <div class="places">
+    <ng-container *ngIf="placesResults.length == 0">
+      <h6>No places found.</h6>
+    </ng-container>
     <app-place-card *ngFor="let place of placesResults" [place]="place"></app-place-card>
   </div>
 </h1>
@@ -13,6 +16,9 @@
 <h1 *ngIf="this.personsSearchResults$ | async as personsResults">
   Persons
   <div class="persons">
+    <ng-container *ngIf="personsResults.length == 0">
+      <h6>No people found.</h6>
+    </ng-container>
     <h6 class="link" *ngFor="let person of personsResults">
       <!-- {{ person | json }} -->
       <span (click)="redirectToPerson(person.id)">
