@@ -10,4 +10,5 @@ export interface Place {
   cityName: string;
   openingHours: string[7];
   closingHours: string[7];
+  distance: number;
 }

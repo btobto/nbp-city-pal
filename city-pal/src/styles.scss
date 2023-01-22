@@ -26,6 +26,14 @@
 	}
 }
 
+.btn-delete {
+	background-color: #E53935;
+	color: white;
+	&:hover {
+		background-color: darken(#E53935, 10%);
+	}
+}
+
 .button-group {
     display: flex;
     justify-content: space-between;

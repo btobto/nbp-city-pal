@@ -41,7 +41,7 @@ export class NavbarComponent {
 
   redirectToProfile(id: string) {
     this.router.navigate(['/person/' + id]);
-    this.personsService.getPerson(id).pipe(take(1)).subscribe();
+    this.personsService.getPerson(id).subscribe();
   }
 
   redirectHome() {
