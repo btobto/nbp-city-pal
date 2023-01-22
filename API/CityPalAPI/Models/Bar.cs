@@ -2,7 +2,7 @@
 
 namespace CityPalAPI.Models;
 
-[JsonDerivedType(typeof(Cinema), nameof(Cinema))]
+[JsonDerivedType(typeof(Bar), nameof(Bar))]
 public class Bar : Place
 {
 }

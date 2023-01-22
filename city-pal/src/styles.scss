@@ -17,3 +17,16 @@
 		background-color: darken(#56b3d8, 10%);
 	}
 }
+
+.btn-secondary {
+	background-color: #68e47c;
+	color: white;
+	&:hover {
+		background-color: darken(#68e47c, 10%);
+	}
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+}
