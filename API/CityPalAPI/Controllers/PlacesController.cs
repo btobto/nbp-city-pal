@@ -28,7 +28,7 @@ public class PlacesController : ControllerBase
         var cypher = graphClient.Cypher
             .Match("(place:Place)")
             .Where((Place place) => place.Id == id)
-            .OptionalMatch("(:Person)-[r2:REVIEWED]->(p)")
+            .OptionalMatch("(:Person)-[r2:REVIEWED]->(place)")
             .Match("(place)-[:LOCATED_IN]->(c:City)")
             .With("avg(r2.Rating) as ratingAverage, place, c")
             .Set("place.Rating = ratingAverage")
@@ -49,27 +49,26 @@ public class PlacesController : ControllerBase
 
         string dbCall = $"db.index.fulltext.queryNodes(\"place_name_index\", \"*{name}*\")";
 
+        ICypherFluentQuery cypher;
+
         if (searchParams.PlaceTypes.Length == 0)
         {
-            var cypherWithoutParams = graphClient.Cypher
+            cypher = graphClient.Cypher
                 .Call(dbCall)
-                .Yield("node")
-                .ReturnPolymorphic<Place>("node");
-
-            logger.LogInformation(cypherWithoutParams.Query.DebugQueryText);
-
-            return await cypherWithoutParams.ResultsAsync;
+                .Yield("node");
         }
-
-        var cypher = graphClient.Cypher
-                .Call(dbCall)
-                .Yield("node")
-                .Where($"\"{searchParams.PlaceTypes[0]}\" IN LABELS(node)");
-
-        for (int i = 1; i < searchParams.PlaceTypes.Length; i++)
+        else
         {
-            cypher = cypher
-                .OrWhere($"\"{searchParams.PlaceTypes[i]}\" IN LABELS(node)");
+            cypher = graphClient.Cypher
+                    .Call(dbCall)
+                    .Yield("node")
+                    .Where($"\"{searchParams.PlaceTypes[0]}\" IN LABELS(node)");
+
+            for (int i = 1; i < searchParams.PlaceTypes.Length; i++)
+            {
+                cypher = cypher
+                    .OrWhere($"\"{searchParams.PlaceTypes[i]}\" IN LABELS(node)");
+            }
         }
 
         var cypherReturnPoly = cypher.ReturnPolymorphic<Place>("node")
