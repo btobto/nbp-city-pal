@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { mergeMap, switchMap, tap } from 'rxjs';
 import { Person, Place, Review } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
 import { PlacesService } from 'src/app/services/places.service';
@@ -34,23 +35,35 @@ export class ReviewComponent implements OnInit {
       this.placeService.getPlace(this.review.placeId).subscribe((p) => (this.place = p));
     }
     if (this.person === null) {
+      console.log(this.review);
       this.personService.getPerson(this.review.personId).subscribe((p) => (this.person = p));
     }
   }
 
-  submitReview() {
+  submitReview(reviews: Review[]) {
     if (this.review.comment?.length == 0) {
       alert('Enter some text in your review.');
     }
 
     if (this.creating) {
+      console.log(this.review, 'ne treba niz');
       this.reviewsService.createReview(this.review).subscribe((r) => {
         this.review = r;
-        window.location.reload();
-      });
 
-      console.log('Resetting review input');
-      this.review = { personId: this.viewer.id, placeId: this.place!.id, rating: 5, comment: '' };
+        console.log(r, 'ne treba niz');
+
+        reviews.push(r);
+
+        this.reviewsService.reviews$.next(reviews);
+
+        // window.location.reload();
+        this.review = {
+          personId: this.viewer.id,
+          placeId: this.place!.id,
+          rating: 5,
+          comment: '',
+        };
+      });
     } else {
       this.reviewsService.updateReview(this.review).subscribe((r) => (this.review = r));
       this.isPressed = false;
@@ -59,12 +72,14 @@ export class ReviewComponent implements OnInit {
 
   deleteReview(reviews: Review[]) {
     this.reviewsService.deleteReview(this.review.personId, this.review.placeId).subscribe(() => {
-      this.reviewsService.reviews$.next(
-        reviews.filter(
-          (review) =>
-            review.personId !== this.review.personId && review.placeId !== this.review.placeId
-        )
+      const filteredReviews = reviews.filter(
+        (review) =>
+          !(review.personId === this.review.personId && review.placeId === this.review.placeId)
       );
+
+      console.log(filteredReviews);
+
+      this.reviewsService.reviews$.next(filteredReviews);
     });
   }
 

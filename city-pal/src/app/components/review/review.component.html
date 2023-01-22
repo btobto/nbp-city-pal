@@ -13,34 +13,35 @@
     <h3>User rating: {{ review.rating }}</h3>
     <p>{{ review.comment }}</p>
   </ng-container>
-  <ng-container *ngIf="this.viewer.id == this.person?.id">
-    <ng-container *ngIf="isPressed">
-      <div class="edit-form">
-        <label>New rating</label>
-        <input
-          type="number"
-          min="1"
-          max="5"
-          step="1"
-          [value]="review.rating"
-          [(ngModel)]="review.rating"
-        />
-        <label>New comment</label>
-        <textarea [(ngModel)]="review.comment"></textarea>
-        <button class="btn btn-secondary" (click)="submitReview()">
-          {{ creating ? 'Post' : 'Apply changes' }}
+
+  <ng-container *ngIf="this.reviewsService.reviews$ | async as reviews">
+    <ng-container *ngIf="this.viewer.id == this.person?.id">
+      <ng-container *ngIf="isPressed">
+        <div class="edit-form">
+          <label>New rating</label>
+          <input
+            type="number"
+            min="1"
+            max="5"
+            step="1"
+            [value]="review.rating"
+            [(ngModel)]="review.rating"
+          />
+          <label>New comment</label>
+          <textarea [(ngModel)]="review.comment"></textarea>
+          <button class="btn btn-secondary" (click)="submitReview(reviews)">
+            {{ creating ? 'Post' : 'Apply changes' }}
+          </button>
+        </div>
+      </ng-container>
+      <div class="button-group">
+        <button *ngIf="!creating" class="btn btn-secondary" (click)="isPressed = !isPressed">
+          {{ !isPressed ? 'Edit' : 'Cancel' }}
         </button>
-      </div>
-    </ng-container>
-    <div class="button-group">
-      <button *ngIf="!creating" class="btn btn-secondary" (click)="isPressed = !isPressed">
-        {{ !isPressed ? 'Edit' : 'Cancel' }}
-      </button>
-      <ng-container *ngIf="this.reviewsService.reviews$ | async as reviews">
         <button *ngIf="!creating" class="btn btn-delete" (click)="deleteReview(reviews)">
           Delete
         </button>
-      </ng-container>
-    </div>
+      </div>
+    </ng-container>
   </ng-container>
 </div>

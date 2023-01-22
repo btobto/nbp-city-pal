@@ -26,7 +26,9 @@ export class PersonComponent {
 
     this.personsService.getPerson(id).subscribe();
     this.person$ = <Observable<Person>>this.personsService.person$.asObservable();
-    this.personsReviews$ = this.reviewsService.reviewsFromPerson(id);
+
+    this.reviewsService.reviewsFromPerson(id).subscribe();
+    this.personsReviews$ = this.reviewsService.reviews$.asObservable();
 
     this.user$ = this.personsService.user$;
     this.usersFriends$ = this.personsService.usersFriends$;

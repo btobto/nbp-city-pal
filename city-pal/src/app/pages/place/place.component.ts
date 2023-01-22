@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Person, Place, Review } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
 import { PlacesService } from 'src/app/services/places.service';
@@ -26,7 +26,11 @@ export class PlaceComponent {
     const id: string = this.route.snapshot.paramMap.get('id')!;
 
     this.place$ = this.placesService.getPlace(id);
-    this.placesReviews$ = this.reviewsService.reviewsForPlace(id);
+    this.placesReviews$ = this.reviewsService.reviewsForPlace(id).pipe(
+      tap((r) => {
+        // console.log(r);
+      })
+    );
 
     this.user$ = this.personsService.user$;
   }

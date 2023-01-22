@@ -24,6 +24,7 @@ export class ReviewsService {
   reviewsForPlace(placeId: string): Observable<Review[]> {
     return this.http.get<Review[]>(environment.API_URL + '/Reviews/Places/' + placeId).pipe(
       switchMap((r) => {
+        console.log(r);
         this.reviews$.next(r);
         return this.reviews$;
       })
