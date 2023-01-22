@@ -50,4 +50,9 @@ export class NavbarComponent {
   redirectToSearch() {
     this.router.navigate(['/search']);
   }
+
+  logout() {
+    window.localStorage.removeItem('user');
+    this.router.navigate(['/login']);
+  }
 }

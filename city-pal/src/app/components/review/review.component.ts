@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { Console } from 'console';
 import { Observable } from 'rxjs';
 import { Person, Place, Review } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
 import { PlacesService } from 'src/app/services/places.service';
 import { ReviewsService } from 'src/app/services/reviews.service';
+import { EventEmitter } from 'stream';
 
 @Component({
   selector: 'app-review',
@@ -15,6 +16,11 @@ export class ReviewComponent implements OnInit {
   @Input() review!: Review;
   @Input() place: Place | null = null;
   @Input() person: Person | null = null;
+  @Input() viewer!: Person;
+
+  @Output() deleteReviewEmitter = new EventEmitter();
+
+  isPressed: boolean = false;
 
   constructor(
     private reviewsService: ReviewsService,
@@ -31,13 +37,12 @@ export class ReviewComponent implements OnInit {
     }
   }
 
-  editReview(rating: number, text: string) {
-    this.review.rating = rating;
-    this.review.comment = text;
-    this.reviewsService.updateReview(this.review);
+  editReview() {
+    this.reviewsService.updateReview(this.review).subscribe((r) => (this.review = r));
+    this.isPressed = false;
   }
 
   deleteReview() {
-    this.reviewsService.deleteReview(this.review.personId, this.review.placeId);
+    this.reviewsService.deleteReview(this.review.personId, this.review.placeId).subscribe(() => {});
   }
 }
