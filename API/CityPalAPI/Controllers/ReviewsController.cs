@@ -62,7 +62,7 @@ public class ReviewsController : ControllerBase
 
         logger.LogInformation(createCypher.Query.DebugQueryText);
 
-        return Ok(await createCypher.ResultsAsync);
+        return Ok((await createCypher.ResultsAsync).Single());
     }
 
     [HttpPut("/Reviews/Places")]
