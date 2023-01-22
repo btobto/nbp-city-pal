@@ -12,12 +12,12 @@ CREATE
 (p1)-[:FRIENDS_WITH]->(p2),
 (p2)-[:FRIENDS_WITH]->(p1),
 
-(l1:Location { Id:"l1", Name:"Nis" }),
-(l2:Location { Id:"l2", Name:"Pirot" }),
+(city1:City { Id:"city1", Name:"Nis" }),
+(city2:City { Id:"city2", Name:"Pirot" }),
 
-(p1)-[:LOCATED_IN]->(l1),
-(p2)-[:LOCATED_IN]->(l1),
-(p3)-[:LOCATED_IN]->(l1),
+(p1)-[:LOCATED_IN]->(city1),
+(p2)-[:LOCATED_IN]->(city1),
+(p3)-[:LOCATED_IN]->(city1),
 
 (g1:Gym:Place {Id:"g1", Name:"Gym Town 2", Address:"Kralja Milutina", OpeningHours: [
 time("8:00"),
@@ -122,14 +122,14 @@ time("23:00"),
 time("23:00")
 ], Location: point({ longitude: 43.319012, latitude: 21.8928478 }) }),
 
-(g1)-[:LOCATED_IN]->(l1),
-(g2)-[:LOCATED_IN]->(l1),
+(g1)-[:LOCATED_IN]->(city1),
+(g2)-[:LOCATED_IN]->(city1),
 
-(h1)-[:LOCATED_IN]->(l1),
+(h1)-[:LOCATED_IN]->(city1),
 
-(rest1)-[:LOCATED_IN]->(l1),
+(rest1)-[:LOCATED_IN]->(city1),
 
-(c1)-[:LOCATED_IN]->(l1),
+(c1)-[:LOCATED_IN]->(city1),
 
 (p1)-[:REVIEWED { PersonId: "p1", PlaceId: "c1", Rating: 5, Comment: "bastati" }]->(c1);
 

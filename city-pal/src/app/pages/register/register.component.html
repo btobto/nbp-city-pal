@@ -9,6 +9,18 @@
         <label for="email">Email</label>
         <input type="email" id="email" class="form-control" [(ngModel)]="email" name="email" />
       </div>
+      <div class="form-group">
+        <label>City</label>
+
+        <select [(ngModel)]="selectedCity" name="cities" id="cities">
+          <option value="{{ city.id }}" *ngFor="let city of cities$ | async" [ngValue]="city">
+            {{ city.name }}
+          </option>
+        </select>
+      </div>
+      <br />
+      <br />
+      <br />
       <div class="button-group">
         <button class="btn btn-primary" (click)="register()">Register</button>
         <button class="btn btn-secondary" (click)="redirectToLogin()">Login instead</button>

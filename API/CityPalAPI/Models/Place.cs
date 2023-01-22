@@ -20,6 +20,8 @@ public abstract class Place
 
     public Point Location { get; set; } = default!;
 
+    public string CityName { get; set; } = default!;
+
     public float Rating { get; set; }
 
     public float Distance { get; set; }
