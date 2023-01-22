@@ -27,10 +27,11 @@ public class PlacesController : ControllerBase
         var cypher = graphClient.Cypher
             .Match("(place:Place)")
             .Where((Place place) => place.Id == id)
-            .OptionalMatch(
-            "(:Person)-[r2:REVIEWED]->(p)")
-            .With("avg(r2.Rating) as ratingAverage, place")
+            .OptionalMatch("(:Person)-[r2:REVIEWED]->(p)")
+            .Match("(place)-[:LOCATED_IN]->(c:City)")
+            .With("avg(r2.Rating) as ratingAverage, place, c")
             .Set("place.Rating = ratingAverage")
+            .Set("place.CityName = c.Name")
             .ReturnPolymorphic<Place>("place");
 
         logger.LogInformation(cypher.Query.DebugQueryText);
@@ -64,7 +65,7 @@ public class PlacesController : ControllerBase
                 .Yield("node")
                 .Where($"\"{searchParams.PlaceTypes[0]}\" IN LABELS(node)");
 
-        for (int i = 1; i < searchParams.PlaceTypes.Length;  i++)
+        for (int i = 1; i < searchParams.PlaceTypes.Length; i++)
         {
             cypher = cypher
                 .OrWhere($"\"{searchParams.PlaceTypes[i]}\" IN LABELS(node)");
@@ -90,8 +91,8 @@ public class PlacesController : ControllerBase
            .Match(
                 "(p:Person)",
                 "(p)-[:FRIENDS_WITH]->(friend)",
-                "(p)-[:LOCATED_IN]->(l:Location)",
-                "(place:Place)-[:LOCATED_IN]->(l)",
+                "(p)-[:LOCATED_IN]->(c:City)",
+                "(place:Place)-[:LOCATED_IN]->(c)",
                 "(friend)-[r:REVIEWED]->(place)")
            .OptionalMatch(
                 "(:Person)-[r2:REVIEWED]->(place)"
@@ -110,5 +111,20 @@ public class PlacesController : ControllerBase
         var res = await cypher.ResultsAsync;
 
         return res;
+    }
+
+    [HttpGet("/Cities")]
+    public async Task<IEnumerable<City>> GetCities()
+    {
+        var cypher = graphClient.Cypher
+            .Match("(c:City)")
+            .Return<City>("c");
+
+        logger.LogInformation(cypher.Query.DebugQueryText);
+
+        var res = await cypher.ResultsAsync;
+
+        return res;
+
     }
 }

@@ -12,6 +12,7 @@ import { Person } from '../models';
 
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { RegisterModel } from '../transfer-models';
 
 @Injectable({
   providedIn: 'root',
@@ -71,11 +72,11 @@ export class PersonsService {
       .pipe(tap((user) => this.user$.next(user)));
   }
 
-  register(email: string, name: string): Observable<Person> {
+  register(registerModel: RegisterModel): Observable<Person> {
     return this.http
       .post<Person>(
-        `${environment.API_URL}/Persons/Register/${name}/${email}`,
-        {},
+        `${environment.API_URL}/Persons/Register`,
+        registerModel,
         environment.HTTP_OPTIONS
       )
       .pipe(tap((user) => this.user$.next(user)));

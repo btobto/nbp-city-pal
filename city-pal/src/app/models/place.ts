@@ -7,5 +7,6 @@ export interface Place {
   address: string;
   rating: number;
   location: Point;
+  cityName: string;
   workingHours: string[7];
 }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Point } from '../data-types';
-import { Location, Place } from '../models';
+import { City, Place } from '../models';
 import { SearchParams } from '../transfer-models';
 
 @Injectable({
@@ -30,5 +30,9 @@ export class PlacesService {
       location,
       environment.HTTP_OPTIONS
     );
+  }
+
+  getCities() {
+    return this.http.get<City[]>(environment.API_URL + '/Cities');
   }
 }

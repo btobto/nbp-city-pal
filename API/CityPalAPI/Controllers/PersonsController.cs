@@ -46,37 +46,41 @@ public class PersonsController : ControllerBase
     [HttpPost("Register")]
     public async Task<IActionResult> Register(RegisterModel registerModel)
     {
-        Person p = new Person
+        Person person = new Person
         {
             Id = Guid.NewGuid().ToString(),
             Name = registerModel.Name,
             Email = registerModel.Email
         };
 
-        var cypher = graphClient.Cypher
+        var checkIfExistsCypher = graphClient.Cypher
            .OptionalMatch("(p:Person { Email: $email })")
            .WithParam("email", registerModel.Email)
            .Return<Person?>("p");
 
-		if ((await cypher.ResultsAsync).First() != null)
+		if ((await checkIfExistsCypher.ResultsAsync).First() != null)
         {
 			return ValidationProblem(new ErrorResponse("Title", System.Net.HttpStatusCode.BadRequest, new Dictionary<string, string[]>
 			{
 				{
-					nameof(p.Email), new string[]{"Account with given email already exists."}
+					nameof(person.Email), new string[]{"Account with given email already exists."}
 				}
 			}));
+
 		}
 
-        var cypher2 = graphClient.Cypher
+        var createCypher = graphClient.Cypher
+            .Match("(c:City)")
+            .Where((City c) => c.Id == registerModel.CityId)
             .Create("(p:Person)")
             .Set("p = $person")
-            .WithParam("person", p)
+            .WithParam("person", person)
+            .Create("(p)-[:LOCATED_IN]->(c)")
             .Return<Person>("p");
 
-		logger.LogInformation(cypher2.Query.DebugQueryText);
+        logger.LogInformation(createCypher.Query.DebugQueryText);
 
-        return Ok((await cypher2.ResultsAsync).Single());
+        return Ok((await createCypher.ResultsAsync).Single());
     }
 
     [HttpPost("Friends/{idFirst}/{idSecond}")]
