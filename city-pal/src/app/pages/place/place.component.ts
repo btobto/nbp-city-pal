@@ -12,10 +12,10 @@ import { ReviewsService } from 'src/app/services/reviews.service';
   styleUrls: ['./place.component.scss'],
 })
 export class PlaceComponent {
-  place$: Observable<Place>;
-  placesReviews$: Observable<Review[]>;
+  place$ = new Observable<Place>();
+  placesReviews$ = new Observable<Review[]>();
 
-  user$: Observable<Person | null>;
+  user$ = new Observable<Person | null>();
 
   constructor(
     private placesService: PlacesService,
@@ -23,12 +23,14 @@ export class PlaceComponent {
     private personsService: PersonsService,
     private route: ActivatedRoute
   ) {
-    const id: string = this.route.snapshot.paramMap.get('id')!;
+    this.route.paramMap.subscribe((paramMap) => {
+      const id: string = paramMap.get('id')!;
 
-    this.place$ = this.placesService.getPlace(id);
-    this.placesReviews$ = this.reviewsService.reviewsForPlace(id);
+      this.place$ = this.placesService.getPlace(id);
+      this.placesReviews$ = this.reviewsService.reviewsForPlace(id);
 
-    this.user$ = this.personsService.user$;
+      this.user$ = this.personsService.user$;
+    });
   }
 
   hasReview(reviews: Review[], user: Person): boolean {

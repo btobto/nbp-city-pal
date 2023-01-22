@@ -11,27 +11,29 @@ import { ReviewsService } from 'src/app/services/reviews.service';
   styleUrls: ['./person.component.scss'],
 })
 export class PersonComponent {
-  person$: Observable<Person>;
-  personsReviews$: Observable<Review[]>;
+  person$ = new Observable<Person>();
+  personsReviews$ = new Observable<Review[]>();
 
-  user$: Observable<Person | null>;
-  usersFriends$: Observable<Person[]>;
+  user$ = new Observable<Person | null>();
+  usersFriends$ = new Observable<Person[]>();
 
   constructor(
     private personsService: PersonsService,
     private reviewsService: ReviewsService,
     private route: ActivatedRoute
   ) {
-    const id: string = this.route.snapshot.paramMap.get('id')!;
+    this.route.paramMap.subscribe((paramMap) => {
+      const id: string = paramMap.get('id')!;
 
-    this.personsService.getPerson(id).subscribe();
-    this.person$ = <Observable<Person>>this.personsService.person$.asObservable();
+      this.personsService.getPerson(id).subscribe();
+      this.person$ = <Observable<Person>>this.personsService.person$.asObservable();
 
-    this.reviewsService.reviewsFromPerson(id).subscribe();
-    this.personsReviews$ = this.reviewsService.reviews$.asObservable();
+      this.reviewsService.reviewsFromPerson(id).subscribe();
+      this.personsReviews$ = this.reviewsService.reviews$.asObservable();
 
-    this.user$ = this.personsService.user$;
-    this.usersFriends$ = this.personsService.usersFriends$;
+      this.user$ = this.personsService.user$;
+      this.usersFriends$ = this.personsService.usersFriends$;
+    });
   }
 
   isFriend(id: string, friends: Person[]): boolean {

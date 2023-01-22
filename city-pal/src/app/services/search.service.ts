@@ -34,8 +34,6 @@ export class SearchService {
             x: position.coords.latitude,
             y: position.coords.longitude,
           };
-          console.log(point);
-          console.log(navigator.geolocation.getCurrentPosition((pos) => console.log(pos)));
           return this.searchParams$.pipe(
             switchMap((searchParams) => {
               return this.placesService
