@@ -2,6 +2,8 @@
 
 # Pokretanje
 
+Angular: `npm i`
+
 1. .NET: Pokrenuti API iz (preporucujemo) Visual Studio-a
 2. Angular: `ng serve`
 
