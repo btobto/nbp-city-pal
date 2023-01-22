@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 using Neo4jClient.ReturnPoly;
-using System.Numerics;
-using System.Text.Json;
 
 namespace CityPalAPI.Controllers;
 [ApiController]

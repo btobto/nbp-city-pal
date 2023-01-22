@@ -18,13 +18,11 @@ CREATE
 (p3)-[:FRIENDS_WITH]->(p1),
 (p3)-[:FRIENDS_WITH]->(p4),
 
-
 (city1:City { Id:"city1", Name:"Nis" }),
 (city2:City { Id:"city2", Name:"Pirot" }),
-(city2:City { Id:"city3", Name:"Beograd" }),
-(city2:City { Id:"city4", Name:"Indjija" }),
-(city2:City { Id:"city5", Name:"Zlatibor" }),
-
+(city3:City { Id:"city3", Name:"Beograd" }),
+(city4:City { Id:"city4", Name:"Indjija" }),
+(city5:City { Id:"city5", Name:"Zlatibor" }),
 
 (p1)-[:LOCATED_IN]->(city1),
 (p2)-[:LOCATED_IN]->(city1),
@@ -32,7 +30,6 @@ CREATE
 (p4)-[:LOCATED_IN]->(city2),
 (p5)-[:LOCATED_IN]->(city2),
 (p6)-[:LOCATED_IN]->(city1),
-
 
 (g1:Gym:Place {Id:"g1", Name:"Gym Town 2", Address:"Kralja Milutina", OpeningHours: [
 time("8:00"),
@@ -137,7 +134,7 @@ time("23:00"),
 time("23:00")
 ], Location: point({ longitude: 43.319012, latitude: 21.8928478 }) }),
 
-(c1:Cinema:Place { Id:"c2", Name:"Cine Grand", Address:"Bulevar Nemanjica",
+(c2:Cinema:Place { Id:"c2", Name:"Cine Grand", Address:"Bulevar Nemanjica",
 
 OpeningHours: [
 time("8:00"),
@@ -158,8 +155,6 @@ time("23:00"),
 time("23:00"),
 time("23:00")
 ], Location: point({ longitude: 43.3191666, latitude: 21.8929323 }) }),
-
-
 
 (g1)-[:LOCATED_IN]->(city1),
 (g2)-[:LOCATED_IN]->(city1),

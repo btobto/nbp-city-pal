@@ -2,8 +2,8 @@
 
 # Pokretanje
 
-1. Pokrenuti API iz (preporucujemo) Visual Studio-a
-2. `ng serve`
+1. .NET: Pokrenuti API iz (preporucujemo) Visual Studio-a
+2. Angular: `ng serve`
 
 Aplikacija je na adresi `http://localhost:4200`.
 
