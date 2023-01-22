@@ -10,11 +10,11 @@
       <ng-container *ngIf="this.personsReviews$ | async as reviews">
         <div class="reviews">
           <ng-container *ngIf="reviews.length == 0">
-            <h2>User hasn't reviewed any place yet.</h2>
+            <h2>User hasn't reviewed any places yet.</h2>
           </ng-container>
           <app-review
             *ngFor="let review of reviews"
-            [review]="review"
+            [review]="this.review"
             [person]="person"
           ></app-review>
         </div>
