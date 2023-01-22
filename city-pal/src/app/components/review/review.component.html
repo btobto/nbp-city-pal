@@ -3,9 +3,12 @@
     <span class="link" (click)="redirectToPlace(place!.id)">{{ place?.name }}</span> (Average
     rating: {{ place?.rating }})
   </h2>
-  <h3>
-    Rated by: <span class="link" (click)="redirectToProfile(person!.id)"> {{ person?.name }}</span>
-  </h3>
+  <ng-container *ngIf="!creating">
+    <h3>
+      Rated by:
+      <span class="link" (click)="redirectToProfile(person!.id)"> {{ person?.name }}</span>
+    </h3>
+  </ng-container>
   <ng-container *ngIf="!isPressed">
     <h3>User rating: {{ review.rating }}</h3>
     <p>{{ review.comment }}</p>

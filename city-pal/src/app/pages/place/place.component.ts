@@ -30,4 +30,8 @@ export class PlaceComponent {
 
     this.user$ = this.personsService.user$;
   }
+
+  hasReview(reviews: Review[], user: Person): boolean {
+    return reviews.map((r) => r.personId).includes(user.id);
+  }
 }

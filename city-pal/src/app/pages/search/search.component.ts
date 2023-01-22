@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { PlaceType } from 'src/app/data-types';
 import { SearchService } from 'src/app/services/search.service';
 
@@ -15,7 +16,7 @@ export class SearchComponent {
 
   searchFilters: PlaceType[] = [];
 
-  constructor(private searchService: SearchService) {}
+  constructor(private searchService: SearchService, private router: Router) {}
 
   addFilter(ev: any, filter: PlaceType) {
     const target = ev.target;
@@ -29,5 +30,9 @@ export class SearchComponent {
     }
 
     console.log(this.searchFilters);
+  }
+
+  redirectToPerson(id: string) {
+    this.router.navigate(['/person/' + id]);
   }
 }

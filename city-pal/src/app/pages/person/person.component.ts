@@ -24,7 +24,7 @@ export class PersonComponent {
   ) {
     const id: string = this.route.snapshot.paramMap.get('id')!;
 
-    this.person$ = this.personsService.getPerson(id);
+    this.personsService.getPerson(id).subscribe();
     this.person$ = <Observable<Person>>this.personsService.person$.asObservable();
     this.personsReviews$ = this.reviewsService.reviewsFromPerson(id);
 

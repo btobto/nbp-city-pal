@@ -13,14 +13,16 @@
   </ul>
   <ng-container *ngIf="this.placesReviews$ | async as reviews">
     <ng-container *ngIf="this.user$ | async as viewer">
-      <h2>Leave a review</h2>
-      <app-review
-        [review]="{ personId: viewer.id, placeId: place.id, rating: 5, comment: '' }"
-        [place]="place"
-        [viewer]="viewer"
-        [creating]="true"
-      ></app-review>
-      <h2>Other people's reviews</h2>
+      <ng-container *ngIf="!hasReview(reviews, viewer)">
+        <h2>Leave a review</h2>
+        <app-review
+          [review]="{ personId: viewer.id, placeId: place.id, rating: 5, comment: '' }"
+          [place]="place"
+          [viewer]="viewer"
+          [creating]="true"
+        ></app-review>
+      </ng-container>
+      <h2>Reviews</h2>
       <app-reviews [reviews]="reviews" [place]="place" [viewer]="viewer"></app-reviews>
     </ng-container>
   </ng-container>

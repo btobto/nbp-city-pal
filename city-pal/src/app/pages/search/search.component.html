@@ -5,16 +5,23 @@
 
 <h1 *ngIf="this.placesSearchResults$ | async as placesResults">
   Places
-  <h3 *ngFor="let place of placesResults">
+  <!-- <h3 *ngFor="let place of placesResults">
     {{ place | json }}
     >
-  </h3>
+  </h3> -->
+  <div class="places">
+    <app-place-card *ngFor="let place of placesResults" [place]="place"></app-place-card>
+  </div>
 </h1>
 
 <h1 *ngIf="this.personsSearchResults$ | async as personsResults">
   Persons
-  <h3 *ngFor="let person of personsResults">
-    {{ person | json }}
-    >
-  </h3>
+  <div class="persons">
+    <h6 class="link" *ngFor="let person of personsResults">
+      <!-- {{ person | json }} -->
+      <span (click)="redirectToPerson(person.id)">
+        {{ person.name }}
+      </span>
+    </h6>
+  </div>
 </h1>

@@ -2,6 +2,10 @@
 	background-color: lighten(#CFD8DC, 10%);
 	padding: 0.5rem;
 	max-width: 800px;
+
+	h2 {
+		margin-top: 0px;
+	}	
 }
 
 .button-group {
@@ -16,4 +20,5 @@
 	gap: 10px;
 	padding-bottom: 0.5rem;
 }
+
 

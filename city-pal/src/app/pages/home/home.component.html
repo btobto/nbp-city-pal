@@ -1,9 +1,12 @@
 <ng-container *ngIf="this.user$ | async as user">
   <h1 *ngIf="this.recommendedPlaces$ | async as recommendedPlaces">
     Recommended places
-    <br />
-    {{ recommendedPlaces | json }}
+    <!-- <br /> -->
+    <!-- {{ recommendedPlaces | json }} -->
     <div class="places">
+      <ng-container *ngIf="recommendedPlaces.length == 0">
+        <h5>No recommended places. Make some reviews and follow people.</h5>
+      </ng-container>
       <app-place-card *ngFor="let place of recommendedPlaces" [place]="place"></app-place-card>
     </div>
   </h1>
