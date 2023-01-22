@@ -34,7 +34,7 @@
         {{ !isPressed ? 'Edit' : 'Cancel' }}
       </button>
       <ng-container *ngIf="this.reviewsService.reviews$ | async as reviews">
-        <button *ngIf="!creating" class="btn btn-secondary" (click)="deleteReview(reviews)">
+        <button *ngIf="!creating" class="btn btn-delete" (click)="deleteReview(reviews)">
           Delete
         </button>
       </ng-container>

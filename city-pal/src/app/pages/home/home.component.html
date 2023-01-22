@@ -3,5 +3,8 @@
     Recommended places
     <br />
     {{ recommendedPlaces | json }}
+    <div class="places">
+      <app-place-card *ngFor="let place of recommendedPlaces" [place]="place"></app-place-card>
+    </div>
   </h1>
 </ng-container>

@@ -1,0 +1,8 @@
+<div class="card">
+  <h5>
+    {{ place.$type }} -
+    <span class="link" (click)="redirectToPlace(place.id)">{{ place.name }}</span>
+  </h5>
+  <h6>{{ place.address }}, {{ place.cityName }}</h6>
+  <h6>{{ place.distance }} meters away</h6>
+</div>

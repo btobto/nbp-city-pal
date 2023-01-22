@@ -31,10 +31,9 @@ export class PersonsService {
   }
 
   getPerson(id: string): Observable<Person> {
-    return <Observable<Person>>this.http.get<Person>(environment.API_URL + '/Persons/' + id).pipe(
-      switchMap((person) => {
+    return this.http.get<Person>(environment.API_URL + '/Persons/' + id).pipe(
+      tap((person) => {
         this.person$.next(person);
-        return this.person$;
       })
     );
   }
