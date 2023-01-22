@@ -5,10 +5,6 @@
 
 <h1 *ngIf="this.placesSearchResults$ | async as placesResults">
   Places
-  <!-- <h3 *ngFor="let place of placesResults">
-    {{ place | json }}
-    >
-  </h3> -->
   <div class="places">
     <app-place-card *ngFor="let place of placesResults" [place]="place"></app-place-card>
   </div>
