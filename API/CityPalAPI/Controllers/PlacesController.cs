@@ -28,7 +28,7 @@ public class PlacesController : ControllerBase
         var cypher = graphClient.Cypher
             .Match("(place:Place)")
             .Where((Place place) => place.Id == id)
-            .OptionalMatch("(:Person)-[r2:REVIEWED]->(p)")
+            .OptionalMatch("(:Person)-[r2:REVIEWED]->(place)")
             .Match("(place)-[:LOCATED_IN]->(c:City)")
             .With("avg(r2.Rating) as ratingAverage, place, c")
             .Set("place.Rating = ratingAverage")
