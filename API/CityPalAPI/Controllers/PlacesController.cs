@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 using Neo4jClient.ReturnPoly;
+using System.Numerics;
 using System.Text.Json;
 
 namespace CityPalAPI.Controllers;
@@ -71,16 +72,28 @@ public class PlacesController : ControllerBase
                 .OrWhere($"\"{searchParams.PlaceTypes[i]}\" IN LABELS(node)");
         }
 
-        ICypherFluentQuery<Place> cypherPlace = cypher
-           .With($"point.distance(point({{srId: 4326, x: {searchParams.Location.X}, y: {searchParams.Location.Y}}}), node.Location) as distance, node")
-           .Set("node.Distance = distance")
-           .ReturnPolymorphic<Place>("node")
+        var cypherReturnPoly = cypher.ReturnPolymorphic<Place>("node")
+            .Limit(10);
+
+        var places = (await cypherReturnPoly.ResultsAsync).ToList();
+
+        ICypherFluentQuery<float> distancesCypher = cypher
+           .With($"node, point.distance(point({{srId: 4326, x: {searchParams.Location.X}, y: {searchParams.Location.Y}}}), node.Location) as distance")
+           .Return<float>("distance")
            .OrderBy("distance")
            .Limit(10);
 
-        logger.LogInformation(cypherPlace.Query.DebugQueryText);
+        logger.LogInformation(cypherReturnPoly.Query.DebugQueryText);
+        logger.LogInformation(distancesCypher.Query.DebugQueryText);
 
-        return await cypherPlace.ResultsAsync;
+        var distances = (await distancesCypher.ResultsAsync).ToList();
+
+        for (int i = 0; i < places.Count; i++)
+        {
+            places[i].Distance = distances[i];
+        }
+
+        return places;
     }
 
     [HttpPost("Recommended/{personId}")]
@@ -101,17 +114,31 @@ public class PlacesController : ControllerBase
            .Where((Person p) => p.Id == personId)
            .AndWhere((Review r) => r.Rating > 2.5)
            .With("avg(r2.Rating) as ratingAverage, place")
-           .Set("place.Rating = ratingAverage")
-           .With($"point.distance(point({{srId: 4326, x: {location.X}, y: {location.Y}}}), place.Location) as distance, place")
-           .Set("place.Distance = distance")
-           .ReturnPolymorphic<Place>("place")
-           .OrderBy("distance");
+           .Set("place.Rating = ratingAverage");
 
-        logger.LogInformation(cypher.Query.DebugQueryText);
 
-        var res = await cypher.ResultsAsync;
+        var cypherReturnPoly = cypher.ReturnPolymorphic<Place>("place")
+            .Limit(10);
 
-        return res;
+        var places = (await cypherReturnPoly.ResultsAsync).ToList();
+
+        ICypherFluentQuery<float> distancesCypher = cypher
+           .With($"place, point.distance(point({{srId: 4326, x: {location.X}, y: {location.Y}}}), place.Location) as distance")
+           .Return<float>("distance")
+           .OrderBy("distance")
+           .Limit(10);
+
+        logger.LogInformation(cypherReturnPoly.Query.DebugQueryText);
+        logger.LogInformation(distancesCypher.Query.DebugQueryText);
+
+        var distances = (await distancesCypher.ResultsAsync).ToList();
+
+        for (int i = 0; i < places.Count; i++)
+        {
+            places[i].Distance = distances[i];
+        }
+
+        return places;
     }
 
     [HttpGet("/Cities")]

@@ -131,7 +131,7 @@ time("23:00")
 
 (c1)-[:LOCATED_IN]->(city1),
 
-(p1)-[:REVIEWED { PersonId: "p1", PlaceId: "c1", Rating: 5, Comment: "bastati" }]->(c1);
+(p1)-[:REVIEWED { PersonId: "p1", PlaceId: "c1", Rating: 5, Comment: "My pleasure" }]->(c1);
 
 CREATE POINT INDEX place_location_index
 FOR (pl:Place) ON (pl.Location);
