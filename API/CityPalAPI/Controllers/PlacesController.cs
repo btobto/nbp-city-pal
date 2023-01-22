@@ -77,6 +77,8 @@ public class PlacesController : ControllerBase
         var places = (await cypherReturnPoly.ResultsAsync).ToList();
 
         ICypherFluentQuery<float> distancesCypher = cypher
+           .Match("(node)-[:LOCATED_IN]->(c:City)")
+           .Set("node.CityName = c.Name")
            .With($"node, point.distance(point({{srId: 4326, x: {searchParams.Location.X}, y: {searchParams.Location.Y}}}), node.Location) as distance")
            .Return<float>("distance")
            .OrderBy("distance")
@@ -112,7 +114,8 @@ public class PlacesController : ControllerBase
             )
            .Where((Person p) => p.Id == personId)
            .AndWhere((Review r) => r.Rating > 2.5)
-           .With("avg(r2.Rating) as ratingAverage, place")
+           .With("c, avg(r2.Rating) as ratingAverage, place")
+           .Set("place.CityName = c.Name")
            .Set("place.Rating = ratingAverage");
 
 
