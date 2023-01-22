@@ -8,9 +8,9 @@ public class Point
         this.Y = y;
     }
 
-    public int SrId { get; }
+    public int SrId { get; set; }
 
-    public double X { get; }
+    public double X { get; set; }
 
-    public double Y { get; }
+    public double Y { get; set; }
 }
