@@ -1,5 +1,8 @@
 # nbp-city-pal
 
+- Andrija Tošić 18015
+- Božidar Tošić 18016
+
 # Pokretanje
 
 Angular: `npm i`
