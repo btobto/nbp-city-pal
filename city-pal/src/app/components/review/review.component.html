@@ -16,21 +16,27 @@
         <label>New rating</label>
         <input
           type="number"
-          min="0"
+          min="1"
           max="5"
           step="1"
           [value]="review.rating"
           [(ngModel)]="review.rating"
         />
         <label>New comment</label>
-        <textarea [(ngModel)]="review.comment">{{ review.comment }}</textarea>
-        <button class="btn btn-secondary" (click)="editReview()">Apply changes</button>
+        <textarea [(ngModel)]="review.comment"></textarea>
+        <button class="btn btn-secondary" (click)="submitReview()">
+          {{ creating ? 'Post' : 'Apply changes' }}
+        </button>
       </div>
     </ng-container>
     <div class="button-group">
-      <button class="btn btn-secondary" (click)="isPressed = !isPressed">Edit</button>
+      <button *ngIf="!creating" class="btn btn-secondary" (click)="isPressed = !isPressed">
+        {{ !isPressed ? 'Edit' : 'Cancel' }}
+      </button>
       <ng-container *ngIf="this.reviewsService.reviews$ | async as reviews">
-        <button class="btn btn-secondary" (click)="deleteReview(reviews)">Delete</button>
+        <button *ngIf="!creating" class="btn btn-secondary" (click)="deleteReview(reviews)">
+          Delete
+        </button>
       </ng-container>
     </div>
   </ng-container>

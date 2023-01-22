@@ -1,7 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Console } from 'console';
-import { Observable } from 'rxjs';
 import { Person, Place, Review } from 'src/app/models';
 import { PersonsService } from 'src/app/services/persons.service';
 import { PlacesService } from 'src/app/services/places.service';
@@ -17,6 +15,7 @@ export class ReviewComponent implements OnInit {
   @Input() place: Place | null = null;
   @Input() person: Person | null = null;
   @Input() viewer!: Person;
+  @Input() creating: boolean = false;
 
   isPressed: boolean = false;
 
@@ -28,6 +27,9 @@ export class ReviewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.creating) {
+      this.isPressed = true;
+    }
     if (this.place === null) {
       this.placeService.getPlace(this.review.placeId).subscribe((p) => (this.place = p));
     }
@@ -36,9 +38,20 @@ export class ReviewComponent implements OnInit {
     }
   }
 
-  editReview() {
-    this.reviewsService.updateReview(this.review).subscribe((r) => (this.review = r));
-    this.isPressed = false;
+  submitReview() {
+    if (this.review.comment?.length == 0) {
+      alert('Enter some text in your review.');
+    }
+
+    if (this.creating) {
+      this.reviewsService.createReview(this.review).subscribe((r) => (this.review = r));
+
+      console.log('Resetting review input');
+      this.review = { personId: this.viewer.id, placeId: this.place!.id, rating: 5, comment: '' };
+    } else {
+      this.reviewsService.updateReview(this.review).subscribe((r) => (this.review = r));
+      this.isPressed = false;
+    }
   }
 
   deleteReview(reviews: Review[]) {

@@ -1,14 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  filter,
-  Observable,
-  ObservedValuesFromArray,
-  of,
-  Subject,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, tap } from 'rxjs';
 import { Person } from '../models';
 
 import { HttpClient } from '@angular/common/http';
