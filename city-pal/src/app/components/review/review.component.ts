@@ -44,12 +44,13 @@ export class ReviewComponent implements OnInit {
     }
 
     if (this.creating) {
-      this.reviewsService.createReview(this.review).subscribe((r) => (this.review = r));
+      this.reviewsService.createReview(this.review).subscribe((r) => {
+        this.review = r;
+        window.location.reload();
+      });
 
       console.log('Resetting review input');
       this.review = { personId: this.viewer.id, placeId: this.place!.id, rating: 5, comment: '' };
-
-      window.location.reload();
     } else {
       this.reviewsService.updateReview(this.review).subscribe((r) => (this.review = r));
       this.isPressed = false;
