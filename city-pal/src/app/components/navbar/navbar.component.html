@@ -1,9 +1,9 @@
 <ng-container *ngIf="this.user$ | async as user">
   <div>
     <div class="navbar">
-      <button class="navbar-left" (click)="redirectHome()">
+      <div class="navbar-left header-button" (click)="redirectHome()">
         <h1 class="navbar-header">CityPal</h1>
-      </button>
+      </div>
       <div class="navbar-center">
         <input type="text" class="navbar-search" placeholder="Search..." />
       </div>

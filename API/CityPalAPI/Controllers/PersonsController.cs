@@ -55,13 +55,10 @@ public class PersonsController : ControllerBase
 
         await graphClient.Cypher
            .Merge("(p:Person { Email: $email })")
+           .WithParam("email", registerModel.Email)
            .OnCreate()
            .Set("p = $person")
-           .WithParams(new
-           {
-               registerModel.Email,
-               person = p
-           })
+           .WithParam("person", p)
            .ExecuteWithoutResultsAsync();
 
         return p;

@@ -15,11 +15,13 @@ export class RegisterComponent {
 
   register() {
     if (this.email && this.name) {
-      this.personsService
-        .register(this.email, this.name)
-        .subscribe((person) => {
-          this.router.navigate(['/home']);
-        });
+      this.personsService.register(this.email, this.name).subscribe((person) => {
+        this.router.navigate(['/home']);
+      });
     }
+  }
+
+  redirectToLogin() {
+    this.router.navigate(['/login']);
   }
 }
