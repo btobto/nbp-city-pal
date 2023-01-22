@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { catchError } from 'rxjs';
+import { alertErrors } from 'src/app/alert-errors';
 import { PersonsService } from 'src/app/services/persons.service';
 
 @Component({
@@ -14,8 +16,17 @@ export class LoginComponent {
 
   login() {
     if (this.email) {
-      this.personsService.login(this.email).subscribe((person) => {
-        this.router.navigate(['/home']);
+      if (!(this.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email))) {
+        alert('Email is not valid.');
+
+        return;
+      }
+
+      this.personsService.login(this.email).subscribe({
+        next: (person) => {
+          this.router.navigate(['/home']);
+        },
+        error: alertErrors,
       });
     }
   }
