@@ -25,9 +25,13 @@ public class PlacesController : ControllerBase
     public async Task<Place> GetPlace(string id)
     {
         var cypher = graphClient.Cypher
-            .Match("(p:Place)")
-            .Where((Place p) => p.Id == id)
-            .ReturnDistinctPolymorphic<Place>("p");
+            .Match("(place:Place)")
+            .Where((Place place) => place.Id == id)
+            .OptionalMatch(
+            "(:Person)-[r2:REVIEWED]->(p)")
+            .With("avg(r2.Rating) as ratingAverage, place")
+            .Set("place.Rating = ratingAverage")
+            .ReturnPolymorphic<Place>("place");
 
         logger.LogInformation(cypher.Query.DebugQueryText);
 

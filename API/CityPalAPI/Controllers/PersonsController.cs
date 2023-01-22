@@ -44,7 +44,7 @@ public class PersonsController : ControllerBase
     }
 
     [HttpPost("Register")]
-    public async Task<IActionResult> Create(RegisterModel registerModel)
+    public async Task<IActionResult> Register(RegisterModel registerModel)
     {
         Person p = new Person
         {

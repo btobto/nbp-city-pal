@@ -5,7 +5,7 @@ using Neo4jClient;
 namespace CityPalAPI.Controllers;
 [ApiController]
 [Route("[controller]")]
-public class ReviewsController
+public class ReviewsController : ControllerBase
 {
     private readonly ILogger<PlacesController> logger;
     private readonly IBoltGraphClient graphClient;
@@ -19,7 +19,7 @@ public class ReviewsController
     [HttpGet("/Reviews/Persons/{personId}")]
     public async Task<IEnumerable<Review>> PersonsReviews(string personId)
     {
-        var cypher =  graphClient.Cypher
+        var cypher = graphClient.Cypher
            .Match("(p:Person)-[r:REVIEWED]->(pl:Place)")
            .Where((Person p) => p.Id == personId)
            .Return<Review>("r");
@@ -30,45 +30,56 @@ public class ReviewsController
     }
 
     [HttpPost("/Reviews/Places")]
-    public async Task CreatePlaceReview(Review rating)
+    public async Task<IActionResult> CreatePlaceReview(Review review)
     {
-        // TODO: Prevent create if already exists
-
         var cypher = graphClient.Cypher
-           .Match("(p:Person)")
-           .With("p")
-           .Match("(pl:Place)")
-           .Where((Person p) => p.Id == rating.PersonId)
-           .AndWhere((Place pl) => pl.Id == rating.PlaceId)
-           .Create("(p)-[r:REVIEWED $relParams]->(pl)")
-           .WithParam("relParams", new Review
-           {
-               PersonId = rating.PersonId,
-               PlaceId = rating.PlaceId,
-               Rating = rating.Rating,
-               Comment = rating.Comment
-           });
+           .Match("(p:Person)-[r:REVIEWED]->(pl:Place)")
+           .Where((Person p) => p.Id == review.PersonId)
+           .AndWhere((Place pl) => pl.Id == review.PlaceId)
+           .AndWhere((Review r) => r.PersonId == review.PersonId && r.PlaceId == review.PlaceId)
+           .Return<Review>("r");
 
         logger.LogInformation(cypher.Query.DebugQueryText);
 
-        await cypher.ExecuteWithoutResultsAsync();
+        var cypherResults = await cypher.ResultsAsync;
+
+        // If exists, update
+        if (cypherResults.Any())
+        {
+            return Ok(await UpdatePlaceReview(review));
+        }
+
+        // Else, create
+        var createCypher = graphClient.Cypher
+           .Match("(p:Person)")
+           .With("p")
+           .Match("(pl:Place)")
+           .Where((Person p) => p.Id == review.PersonId)
+           .AndWhere((Place pl) => pl.Id == review.PlaceId)
+           .Create("(p)-[r:REVIEWED $relParams]->(pl)")
+           .WithParam("relParams", review)
+           .Return<Review>("r");
+
+        logger.LogInformation(createCypher.Query.DebugQueryText);
+
+        return Ok(await createCypher.ResultsAsync);
     }
 
     [HttpPut("/Reviews/Places")]
-    public async Task UpdatePlaceReview(Review rating)
+    public async Task<Review> UpdatePlaceReview(Review review)
     {
         var cypher = graphClient.Cypher
-           .Match("(p:Person)")
-           .With("p")
-           .Match("(pl:Place)")
-           .Where((Person p) => p.Id == rating.PersonId)
-           .AndWhere((Place pl) => pl.Id == rating.PlaceId)
-           .Set("(p)-[r:REVIEWED $relParams]->(pl)")
-           .WithParam("relParams", new { rating.Rating, rating.Comment });
+           .Match("(p:Person)-[r:REVIEWED]->(pl:Place)")
+           .Where((Person p) => p.Id == review.PersonId)
+           .AndWhere((Place pl) => pl.Id == review.PlaceId)
+           .AndWhere((Review r) => r.PersonId == review.PersonId && r.PlaceId == review.PlaceId)
+           .Set("r = $relParams")
+           .WithParam("relParams", review)
+           .Return<Review>("r");
 
         logger.LogInformation(cypher.Query.DebugQueryText);
 
-        await cypher.ExecuteWithoutResultsAsync();
+        return (await cypher.ResultsAsync).Single();
     }
 
     [HttpDelete("/Reviews/Places/{personId}/{placeId}")]
